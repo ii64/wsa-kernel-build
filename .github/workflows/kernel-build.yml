@@ -15,4 +15,53 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag wsa-kernel-build:$(date +%s)
+      run: docker build . --file Dockerfile --tag wsa-kernel-build:ci
+
+    - name: Downloading kernel
+      run: |
+        wget ${{ secrets.WSA_DOWNLOAD_URL }} -O wsa-kernel.zip
+
+    - name: Extract kernel
+      run: |
+        unzip -d . wsa-kernel.zip
+        echo "WSA_KERNEL_DIR=./WSA-Linux-Kernel" >> $GITHUB_ENV
+
+    - name: Setting configuration
+      run: |
+        mv $WSA_KERNEL_DIR/.config $WSA_KERNEL_DIR/x86.config
+        ls -lah | grep .config
+
+    - name: Running build
+      run: |
+        docker run --rm -v "$WSA_KERNEL_DIR:/src" -it wsa-kernel-build:ci sh -c 'make -j$(nproc)'
+
+    - name: Create zip bzImage x86
+      run: |
+        zip -r ./bzImage-x86.zip --junk-paths $WSA_KERNEL_DIR/arch/x86/boot/bzImage
+
+
+    - name: Create release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}_${{ github.sha }}
+        release_name: ${{ github.ref }}
+        body: |
+          Artifact ${{ github.ref }}
+        draft: false
+        prerelease: false
+
+    - name: Upload bzImage x86
+      id: upload_release_bzimage
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: ./bzImage-x86.zip
+        asset_name: bzImage-x86.zip
+        
+      
+      
