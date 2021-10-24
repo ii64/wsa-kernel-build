@@ -30,6 +30,7 @@ jobs:
 
     - name: Setting configuration
       run: |
+        ls -lah .
         mv ./x86.config $WSA_KERNEL_DIR/.config
         ls -lah | grep .config
 
