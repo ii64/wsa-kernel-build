@@ -30,7 +30,7 @@ jobs:
 
     - name: Setting configuration
       run: |
-        mv $WSA_KERNEL_DIR/.config $WSA_KERNEL_DIR/x86.config
+        mv ./x86.config $WSA_KERNEL_DIR/.config
         ls -lah | grep .config
 
     - name: Running build
