@@ -19,9 +19,13 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file Dockerfile --tag wsa-kernel-build:ci
 
-    - name: Downloading kernel
+    - name: Getting kernel url and download
+      shell: pwsh
       run: |
-        wget "${{ secrets.WSA_DOWNLOAD_URL }}" -O wsa-kernel.zip
+        $json = Invoke-RestMethod 'https://3rdpartysource.microsoft.com/downloads'
+        $wsaKernel = $json | Where-Object Name -ILike '*WSA-Linux-Kernel.zip'
+        echo "WSA Kernel URL: " $wsaKernel.url
+        Invoke-WebRequest -Uri $wsaKernel.url -OutFile wsa-kernel.zip
 
     - name: Extract kernel
       run: |
