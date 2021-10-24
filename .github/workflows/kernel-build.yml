@@ -26,7 +26,7 @@ jobs:
     - name: Extract kernel
       run: |
         unzip -d . wsa-kernel.zip
-        echo "WSA_KERNEL_DIR=./WSA-Linux-Kernel" >> $GITHUB_ENV
+        echo "WSA_KERNEL_DIR=WSA-Linux-Kernel" >> $GITHUB_ENV
 
     - name: Setting configuration
       run: |
