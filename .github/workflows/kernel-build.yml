@@ -63,6 +63,8 @@ jobs:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: ./bzImage-x86.zip
         asset_name: bzImage-x86.zip
+        asset_content_type: application/zip
+
         
       
       
