@@ -21,7 +21,7 @@ jobs:
 
     - name: Downloading kernel
       run: |
-        wget ${{ secrets.WSA_DOWNLOAD_URL }} -O wsa-kernel.zip
+        wget "${{ secrets.WSA_DOWNLOAD_URL }}" -O wsa-kernel.zip
 
     - name: Extract kernel
       run: |
