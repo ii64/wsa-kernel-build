@@ -34,7 +34,7 @@ jobs:
 
     - name: Running build
       run: |
-        docker run --rm -v "$WSA_KERNEL_DIR:/src" -it wsa-kernel-build:ci sh -c 'make -j$(nproc)'
+        docker run --rm -v "$WSA_KERNEL_DIR:/src" wsa-kernel-build:ci sh -c 'make -j$(nproc)'
 
     - name: Create zip bzImage x86
       run: |
